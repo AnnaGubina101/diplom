@@ -1,0 +1,129 @@
+.buying-scheme {
+  width: 100%;
+  padding-top: 1rem;
+  min-height: 376px;
+  background-color: rgba(23, 29, 36, 1);
+}
+
+.buying-info-hint {
+  visibility: hidden;
+}
+
+.buying-scheme__wrapper {
+  width: 100%;
+  max-width: 284px;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  background-image: url(../src/assets/hall-screen.png);
+  background-repeat: no-repeat;
+  background-position: top;
+  background-size: contain;
+}
+
+.book {
+  width: 100%;
+  max-width: 232px;
+}
+
+.buying-scheme__row:first-child {
+    padding-top: 2rem;
+}
+
+.buying-scheme__row {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.buying-scheme__chair {
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: rgba(255, 255, 255, 1);
+  border: 1px;
+  border-color: rgba(82, 82, 82, 1);
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.buying-scheme__chair.selected {
+  background-color: rgba(37, 196, 206, 1);
+}
+
+.closed {
+  background-color: rgba(23, 29, 36, 1);
+  border: 1px solid rgba(82, 82, 82, 1);
+}
+
+.vip {
+  background-color: rgba(249, 149, 58, 1);
+}
+
+.empty-seat {
+  width: 1.25rem;
+  height: 1.25rem;
+  visibility: hidden;
+}
+
+.buying-scheme__legend {
+  width: 100%;
+  max-width: 284px;
+  height: 80px;
+  display: flex;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.buying-scheme__legend-text {
+  font-size: 0.87rem;
+  color: rgba(255, 255, 255, 1);
+  margin-left: 0.25rem;
+}
+
+.buying-scheme__legend-price {
+  max-width: 184px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.status {
+  width: 100%;
+  max-width: 170px;
+  display: flex;
+}
+
+@media (max-width: 1300px) {
+  .header {
+    box-sizing: border-box;
+    padding: 0.87rem;
+  }
+
+  .buying-info {
+    z-index: 1;
+  }
+
+  .buying-info-hint {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background-image: url(/src/assets/tap-icon.png);
+    background-repeat: no-repeat;
+    background-size: 1.5rem;
+    background-position: left center;
+    padding-left: 1.5rem;
+    width: 100px;
+    visibility: visible;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .buying-info-wrap {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+  }
+}

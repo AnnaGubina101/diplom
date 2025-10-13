@@ -1,9 +1,5 @@
-export default function Button({ children }) {
-    const handleBuyClick = () => {
-        
-    }
-
+export default function Button({ children, className = '', onClick}) {
     return(
-        <button className="button" onClick={handleBuyClick}>{children}</button>
+        <button className={`button ${className}`} onClick={onClick}>{children}</button>
     )
 }

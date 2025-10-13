@@ -1,0 +1,153 @@
+.index {
+    width: 990px;
+    margin: 0 auto; 
+}
+
+.login {
+    width: 71px;
+    position: absolute;
+    top: -82px;
+}
+
+.index-button {
+    justify-content: end;
+    position: relative;
+    overflow: visible;
+}
+
+.index-nav {
+    width: 100%;
+    min-height: 60px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.index-nav-days {
+    min-width: max-content
+}
+
+.nav-day {
+    border: none;
+    width: 124px;
+    min-height: 48px;
+    background-color: rgba(255, 255, 255, 1);
+    padding-left: 1px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.nav-selected {
+    width: 241px;
+    min-height: 52px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.weekend {
+    color: rgba(255, 0, 0, 1);
+}
+ 
+.index-main-section {
+    width: 100%;
+    min-height: 350px;
+    padding: 15px;
+    background-color: rgba(241, 235, 230, 0.95);
+    box-sizing: border-box;
+}
+
+.index-main-section__movie-info {
+    display: flex;
+    gap: 15px;
+}
+
+.index-description {
+    font-size: 14px;
+}
+
+.index-time {
+    font-size: 14px;
+}
+
+.index-image {
+    width: 125px;
+    height: 175px;
+}
+
+.img-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.img-wrapper::after {
+    position: absolute;
+    content: '';
+    border-width: 14.4px 0px 0px 6.4px;
+    border-style: solid;
+    border-color: rgba(57, 57, 57, 1);
+}
+
+.index-main-section {
+    margin-bottom: 30px;
+}
+
+.index-main-section__info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.movie-seances {
+    margin-top: 7px;
+}
+
+.seances-button {
+    width: 53px;
+    height: 33px;
+    margin-right: 4px;
+    border: none;
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.24);
+    font-weight: 400;
+    font-size: 15px;
+    border-radius: 2px;
+}
+
+.movie-seances-halls__info {
+    margin-bottom: 20px;
+}
+
+.index-nav-days-contsiner {
+    overflow-x: auto;
+    max-width: 100%;
+    flex: 1;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.scroll-btn {
+    position: absolute;
+    width: 124px;
+    height: 48px;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 2;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+.scroll-btn.right {
+  right: 0;
+}
+
+.index-nav-days-container::-webkit-scrollbar {
+  display: none;
+}

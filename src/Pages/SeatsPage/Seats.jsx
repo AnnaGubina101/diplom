@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { buyingScheme } from "../../data";
 
 export default function Seats() {
     const seatsWithFlags = buyingScheme.map(row =>

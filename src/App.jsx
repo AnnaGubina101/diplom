@@ -1,27 +1,34 @@
-import { useState } from 'react'
-import './Components/Seats/Seats.css'
-import Hall from './Components/Hall'
-import { movies } from './data'
-import Button from './Components/Button'
-import Seats from './Components/Seats/Seats'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import './Pages/SeatsPage/Hall.css'
+import './Pages/MoviesPage/indexNav.css'
+import './Pages/PaymentPage/Payment.css'
+import MoviesPage from './Pages/MoviesPage/MoviesPage'
+import SeatsPage from './Pages/SeatsPage/SeatsPage'
+import Payment from './Pages/PaymentPage/Payment'
+import AdminHeader from './Components/AdminHeader'
+import AdminLoginPage from './Pages/AdminLoginPage/AdminLoginPage'
+import './Pages/AdminLoginPage/AdminLoginPage.css'
+import AdminDashboardPage from './Pages/AdminDashboardPage/AdminDashboardPage'
+import './Pages/AdminDashboardPage/AdminDashboardPage.css'
 
 function App() {
 
   return (
     <>
-    <div className="wrap">
-      <div className='header'>
-        <h1 className='header-main'>Идем<span className='header__letter'>В</span>Кино </h1>
-      </div>
-      <div className="main">
-         {/* {movies.map( movie => <Hall key={movie.title} {...movie} />)}  */}
-        <Hall {...movies[0]} />
-        <Seats />
-        <div className="button-wrap">
-          <Button>Забронировать</Button>
-        </div>
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        {/* <Route path='/' element={<AdminLoginPage />} /> */}
+        <Route path='/' element={<AdminDashboardPage />} />
+      </Routes>
+      
+      {/* <div className="wrap"> */}
+        <Routes>
+          {/* <Route path='/' element={<MoviesPage />} /> */}
+          {/* <Route path='/seats/:sessionId' element={<SeatsPage />}/>
+          <Route path='/payment' element={<Payment />}/> */}
+        </Routes>
+      {/* </div> */}
+    </Router>
     </>
   )
 }

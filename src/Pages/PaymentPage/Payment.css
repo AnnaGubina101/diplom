@@ -1,0 +1,99 @@
+.payment {
+    width: 990px;
+    margin: 0 auto;
+}
+
+.payment-main__header {
+    width: 100%;
+    height: 75px;
+    box-sizing: border-box;
+    padding-left: 15px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(241, 235, 230, 0.95);
+    color: rgba(199, 111, 0, 1);
+    font-size: 22px;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.payment-main__header::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-image: url(../src/assets/ticket-frame-top.png);
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.payment-main__header::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-image: url(../src/assets/ticket-frame-bottom.png);
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.payment-main__ticket {
+    width: 100%;
+    min-height: 325px;
+    margin-top: 5px;
+    background-color: rgba(241, 235, 230, 0.95);
+    position: relative;
+}
+
+.payment-main__ticket::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-image: url(../src/assets/ticket-frame-top.png);
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.payment-main__ticket::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-image: url(../src/assets/ticket-frame-bottom.png);
+    background-repeat: repeat;
+    background-size: contain;
+}
+
+.payment-main__ticket-info {
+    padding: 15px 20px 15px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payment-main-btn {
+    width: 337px;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.ticket-info {
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.ticket-add-info {
+    font-weight: 300;
+    font-size: 14px;
+}
