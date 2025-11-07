@@ -22,10 +22,89 @@
     text-transform: uppercase;
 }
 
-.hall-config-button.selected {
-    width: 90px;
-    height: 46px;
+.hall-config-seats {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+}
+
+.hall-config-seats-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.hall-config-seats-additional {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(132, 132, 132, 1);
+}
+
+.hall-config-seats-input {
+    width: 100px;
+    height: 36px;
+}
+
+.hall-config-seats > p {
+    margin: 0;
+    font-size: 18px;
+    align-self: flex-end;
+    transform: translateY(-13px);
+}
+
+.hall-config-seats-info {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-bottom: 11px;
+}
+
+.hall-config-seats-additional.info {
+    margin-right: 23px;
+}
+
+.hall-config-seats-screen {
+    width: 826px;
+    margin-top: 12px;
+    border: 1px solid rgba(0, 0, 0, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hall-config-seats-screen-info {
+    letter-spacing: 19px;
+    font-size: 16px;
+    text-transform: uppercase;
+    margin-top: 26px;
+    margin-bottom: 20px;
+}
+
+.hall-config-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.hall-config-seats-screen-seats {
+    margin-bottom: 36px;
+}
+
+.config-seats-confirm-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 26px;
+}
+
+.config-seats-confirm-button.cancel {
+    width: 120px;
+    height: 40px;
     background-color: rgba(255, 255, 255, 1);
-    font-size: 15px;
-    font-weight: 900;
+    color: rgba(99, 83, 108, 1);
+}
+
+.config-seats-confirm-button.save {
+    width: 146px;
+    height: 40px;
 }

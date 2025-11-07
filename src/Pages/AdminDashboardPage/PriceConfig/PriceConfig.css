@@ -1,0 +1,14 @@
+.price-config-seats-price-wrap {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.price-config-seats-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.additional-info.price-config {
+    height: 36px;
+}

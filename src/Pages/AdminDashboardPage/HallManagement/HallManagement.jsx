@@ -1,27 +1,18 @@
-import Button from "../../../Components/Button"
+import Button from "../../../Components/Button";
 import arrow from "/src/assets/admin-dashboard-arrow.png";
 import deleteBin from '/src/assets/delete-bin.png';
 import { addHall } from "../../../Api/addhall";
 import { useState, useEffect } from "react";
-import useAllData from "../../../Api/useAllData";
+import useHallsData from '../../../Components/useHallsData'
 import deleteHall from "../../../Api/deleteHall";
 
 export default function HallManagement() {
-
-    const { halls: initialHalls = [] } = useAllData();
+    const { halls, setHalls } = useHallsData();
     const [newHallName, setNewHallName] = useState('')
     const [isAdding, setIsAdding] = useState(false)
-    const [halls, setHalls] = useState([]);
-    
-    useEffect(() => {
-        if (initialHalls) {
-            setHalls(initialHalls);
-        }
-    } , [initialHalls]);
     
     const handleAddClick = () => {
         setIsAdding(true);
-        console.log("клик по кнопке, isAdding было:", isAdding);
     }
         
     const handleSaveClick = async () => {
@@ -56,21 +47,26 @@ export default function HallManagement() {
         }
     };
 
-
     return (
         <div className="dashboard_hall-management">
-            <div className="dashboard-header-wrap">
+            <div className="dashboard-header-wrap circle">
                 <h2 className="dashboard-header">Управление залами</h2>
                 <img src={arrow} alt="arrow" className="dashboard-header-arrow"/>
             </div>
             <div className="dashboard-hall-info">
                 <p className="additional-info">Доступные залы:</p>
                 <ul className="hall-management-list">
-                    {Array.isArray(halls) && halls.map(hall => (
+                    {Array.isArray(halls) && halls
+                    .slice()
+                    .sort((a, b) => {
+                        const numA = parseInt(a.hall_name.match(/\d+/)?.[0] || 0, 10);
+                        const numB = parseInt(b.hall_name.match(/\d+/)?.[0] || 0, 10);
+                        return numA - numB;})
+                    .map(hall => (
                         <li key={hall.id} className="hall-management-list-item">{hall.hall_name}
                             <Button 
                             onClick={() => handleDeleteClick(hall.id)}
-                            className="hall-management-button hall-delete-button">
+                            className="hall-delete-button">
                                 <img src={deleteBin} alt="удалить" className="delete-bin-img"/>
                             </Button>
                         </li>
@@ -78,19 +74,33 @@ export default function HallManagement() {
                 </ul>
                 {!isAdding ? 
                 (<Button type="button" onClick={handleAddClick} className='hall-management-button'>Создать зал</Button>) : 
-                (<div className="hall-management-add-hall-form">
-                    <input 
-                        type="text"
-                        className="hall-management-list-name"
-                        value={newHallName}
-                        onChange={e => setNewHallName(e.target.value)}
-                        placeholder="Введите название зала"
-                    />
-                    <Button type="button" onClick={handleSaveClick}className='hall-management-button'>Сохранить</Button>
-                    <Button type="button" onClick={handleCancelClick} className='hall-management-button'>Отменить</Button>
+                (<div className="popup-overlay">
+                    <div className="hall-management-add-hall-form">
+                        <div className="dashboard-header-wrap pop-up">
+                            <h2 className="dashboard-header">Добавление Зала</h2>
+                            <img src="/src/assets/cross.png" alt="close" className="pop-up-cross" onClick={handleCancelClick}/>
+                        </div>
+                        <div className="hall-management-new-hall">
+                            <div className="hall-management_new-hall-list">
+                                <label htmlFor="hall-management-list-name" className="hall-management-list-label">Название зала</label>
+                                <input 
+                                    type="text"
+                                    id="hall-management-list-name"
+                                    className="hall-management-list-input"
+                                    value={newHallName}
+                                    onChange={e => setNewHallName(e.target.value)}
+                                    placeholder="Например, «Зал 1»"
+                                />
+                            </div>
+                            <div className="hall-management-button-wrap">
+                                <Button type="button" onClick={handleSaveClick}className='hall-management-button'>Добавить зал</Button>
+                                <Button type="button" onClick={handleCancelClick} className='hall-management-button cancel'>Отменить</Button>
+                            </div>
+                        </div>
+                    </div>
                 </div>)
                 }
-        </div>
             </div>
+        </div>
     )
-}
+}   

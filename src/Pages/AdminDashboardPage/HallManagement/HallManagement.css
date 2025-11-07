@@ -1,4 +1,3 @@
-
 .hall-management-button {
     width: 159px;
     height: 40px;
@@ -19,18 +18,34 @@
 
 }
 
-.hall-management-add-hall-form {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  background: rgba(234, 233, 235, 0.95);
-  padding: 10px;
-  z-index: 999;
-  position: relative;
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
-.hall-management-list-name {
-    padding: 10px;
+.hall-management-add-hall-form {
+    width: 960px;
+    height: 260px;
+    margin: 0 auto;
+    background: rgba(234, 233, 235, 0.95);
+    z-index: 1001;
+    position: relative;
+}
+
+.hall-management-list-input {
+    width: 750px;
+    height: 35px;
+    padding: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 .hall-delete-button {
@@ -43,4 +58,46 @@
 .delete-bin-img {
     width: 12px;
     height: 12px;
+}
+
+.hall-management-button.cancel {
+    width: 140px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 1);
+    color: rgba(99, 83, 108, 1);
+}
+
+.hall-management-button {
+    width: 194px;
+    height: 40px;
+}
+
+.hall-management-new-hall {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hall-management_new-hall-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 34px;
+    margin-bottom: 34px;
+}
+
+.hall-management-list-label {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.hall-management-button-wrap {
+    display: flex;
+    gap: 14px;
+}
+
+.pop-up-cross {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
 }

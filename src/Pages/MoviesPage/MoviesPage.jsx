@@ -2,10 +2,10 @@ import Main from '../MoviesPage/Main'
 import Navigation from '../MoviesPage/Nav'
 import Button from '../../Components/Button'
 import Header from '../../Components/Header'
-import useAllData from '../../Api/useAllData'
+import { useAdminData } from '../../Api/AdminDataProvider'
 
 export default function MoviesPage() {
-    const {films} = useAllData()
+    const {films} = useAdminData()
     return (
         <>
             <Header />

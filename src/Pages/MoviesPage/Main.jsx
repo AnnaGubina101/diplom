@@ -1,8 +1,8 @@
-import useAllData from "../../Api/useAllData"
+import { useAdminData } from "../../Api/AdminDataProvider";
 import React from "react"
 
 export default function Main() {
-    const {films, halls, seances} = useAllData()
+    const {films, halls, seances} = useAdminData();
     return (
         <div className="index-main">
             {films.map(film => (
