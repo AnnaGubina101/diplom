@@ -13,8 +13,23 @@ const ItemTypes = {
 };
 const colors = ["rgba(202, 255, 133, 1)", "rgba(133, 255, 137, 1)", "rgba(133, 255, 211, 1)", "rgba(133, 226, 255, 1)", "rgba(133, 153, 255, 1)"];
 
+function timeToMinutes(time) {
+  if (!time) return 0;
+  if (typeof time === "string") {
+    const [hours, minutes] = time.split(":").map(Number);
+    if (isNaN(hours) || isNaN(minutes)) return 0;
+    return hours * 60 + minutes;
+  }
+  if (typeof time === "number") {
+    const hours = Math.floor(time / 100);
+    const minutes = time % 100;
+    return hours * 60 + minutes;
+  }
+  return 0;
+}
 
-function DraggableFilm({ film, simple = false }) {
+
+function DraggableFilm({ film, simple = false, onDeleteFilm, style, onDraggingChange}) {
   const [{ isDragging }, dragRef] = useDrag(() => ({
     type: ItemTypes.FILM,
     item: { film: { ...film, seanceId: film.seanceId } },
@@ -23,22 +38,31 @@ function DraggableFilm({ film, simple = false }) {
     }),
   }));
 
-  const pxPerMinute = 0.5;
-  const filmWidth = film.film_duration * pxPerMinute;
+  useEffect(() => {
+    onDraggingChange?.(isDragging);
+  }, [isDragging]);
 
   return (
     <div
       ref={dragRef}
       key={film.id}
-      style={{ 
+      style={{
+        ...style,
         backgroundColor: colors[film.id % colors.length],
         opacity: isDragging ? 0.5 : 1,
-        width: simple ? `${filmWidth}px` : "259px",
-        border: '1px solid rgba(0, 0, 0, 0.3)'
+        height: simple ? "2.857rem" : "3.714rem",
+        border: '1px solid rgba(0, 0, 0, 0.3)',
+        alignItems: simple ? 'center' : '',
+        padding: simple ? "0.714rem" : '',
+        boxSizing: simple ?'border-box' : '',
+        justifyContent: simple ? 'center' : '',
+        overflow: "hidden"
       }} 
       className="session-grid-movie">
      {simple ? (
-        <p style={{ fontSize: '10px' }}>{film.film_name}</p>
+      <>
+        <p style={{ fontSize: '0.7rem' }}>{film.film_name}</p>
+      </>
       ) : (
         <>
           <div className="session-grid-movie-poster-wrap">
@@ -52,7 +76,7 @@ function DraggableFilm({ film, simple = false }) {
             <p className="session-grid-movie-title">{film.film_name}</p>
             <p className="session-grid-movie-duration">{film.film_duration} минут</p>
           </div>
-          <button className="session-grid-movie-delete-btn">
+          <button className="session-grid-movie-delete-btn" onClick={() => onDeleteFilm && onDeleteFilm(film)}>
             <img className="movie-delete-img" src={deleteBin} alt="Удалить" />
           </button>
         </>
@@ -62,17 +86,34 @@ function DraggableFilm({ film, simple = false }) {
 }
 
 
-function DroppableTimeline({ hall, filmsInHall, onDropFilm }) {
+function DroppableTimeline({ hall, filmsInHall, onDropFilm, onDraggingChange }) {
     const { halls, films } = useAdminData();
     const [isAdding, setIsAdding] = useState(false);
     const [selectedHall, setSelectedHall] = useState(hall?.id || "");
     const [selectedFilm, setSelectedFilm] = useState(null);
     const [time, setTime] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleCancelClick = () => {
+    const DAY_START = 10 * 60;
+    const DAY_END = 23 * 60 + 59;
+    const DAY_DURATION = DAY_END - DAY_START;
+    
+    function isTimeAvailable(filmsInHall, newTime, newDuration) {
+      const newStart = timeToMinutes(newTime);
+      const newEnd = newStart + newDuration;
+
+      return !filmsInHall.some(film => {
+        const existingStart = timeToMinutes(film.seanceTime);
+        const existingEnd = existingStart + film.film_duration;
+        return newStart < existingEnd && newEnd > existingStart;
+      });
+    }
+
+    const handleCancel = () => {
         setIsAdding(false);
         setSelectedFilm(null);
         setTime("");
+        isModalOpen(false)
     }
 
     const [{ isOver }, dropRef] = useDrop(() => ({
@@ -83,42 +124,84 @@ function DroppableTimeline({ hall, filmsInHall, onDropFilm }) {
         collect: (monitor) => ({ isOver: monitor.isOver() }),
     }));
 
-    const handleSave = async (time) => {
+    const handleSavePopup = async () => {
         if (!selectedFilm || !selectedHall || !time) return;
+        const seanceTimeString = String(time);
 
-        await addSeance(selectedHall, selectedFilm.id, time);
-        onDropFilm(selectedHall, { ...selectedFilm, seanceTime: time });
+        const startMinutes = timeToMinutes(time);
+        const endMinutes = startMinutes + selectedFilm.film_duration;
 
-        handleCancelClick();
+        if (!isTimeAvailable(filmsInHall, time, selectedFilm.film_duration)) {
+          alert("Время сеанса пересекается с другим фильмом в этом зале!");
+          return;
+        }
+
+        if (endMinutes > MAX_TIME) {
+            alert("Этот сеанс заканчивается позже 23:59. Выберите другое время.");
+            return;
+        }
+
+        onDropFilm(selectedHall, { ...selectedFilm, seanceTime: seanceTimeString, seanceId: null });
+
+        handleCancel();
     };
 
   return (
     <>
-        <div
-        ref={dropRef}
-        style={{
-            minHeight: "60px",
-            width: '720px',
-            border: '1px solid rgba(132, 132, 132, 1)',
-            display: "flex",
-            alignItems: "center",
-            overflowX: "auto",
-            padding: "10px",
-            boxSizing: 'border-box',
-            marginBottom: '35px'
-        }}
-        >
-        {filmsInHall.map((film, idx) => (
-            <DraggableFilm key={`${idx}-${film.id}`} film={film} simple/>
-        ))}
-        </div>
+     <div className="timeline-scroll">
+        <div className="timeline-container" ref={dropRef}>
+          {filmsInHall.map((film, idx) => {
+            const [h, m] = film.seanceTime.split(":").map(Number);
+            const startMin = h * 60 + m;
+            const leftPct = ((startMin - DAY_START) / DAY_DURATION) * 100;
+            let widthPct = (film.film_duration / DAY_DURATION) * 100;
 
+            if (leftPct + widthPct > 100) widthPct = 100 - leftPct;
+            if (leftPct < 0 || leftPct > 100) return null;
+
+            return (
+              <DraggableFilm
+                key={`${film.id}-${idx}`}
+                film={film}
+                simple
+                onDraggingChange={onDraggingChange}
+                style={{
+                  position: "absolute",
+                  left: `${leftPct}%`,
+                  width: `${widthPct}%`
+                }}
+              />
+            );
+          })}
+          {filmsInHall.map((film, idx) => {
+            const [h, m] = film.seanceTime.split(":").map(Number);
+            const startMin = h * 60 + m;
+
+            const leftPct = ((startMin - DAY_START) / DAY_DURATION) * 100;
+            if (leftPct < 0 || leftPct > 100) return null;
+
+            return (
+              <div
+                key={`${film.id}-time-${idx}`}
+                className="session-grid-movie-time"
+                style={{
+                  position: "absolute",
+                  left: `${leftPct}%`,
+                  top: "4.428rem"
+                }}
+              >
+                {film.seanceTime}
+              </div>
+            );
+          })}
+        </div>
+      </div>
         {isAdding && (
             <div className="popup-overlay">
                 <div className="session-grid-add-popup-form seance">
                     <div className="dashboard-header-wrap pop-up">
                         <h2 className="dashboard-header">Добавление сеанса</h2>
-                        <img src="/src/assets/cross.png" alt="close" className="pop-up-cross" onClick={handleCancelClick}/>
+                        <img src="/src/assets/cross.png" alt="close" className="pop-up-cross" onClick={handleCancel}/>
                     </div>
                     <div className="session-grid-new-item">
                         <div className="session-grid-new-item-list">
@@ -167,8 +250,8 @@ function DroppableTimeline({ hall, filmsInHall, onDropFilm }) {
                             </div>
                         </div>
                         <div className="session-grid-pop-up-buttons">
-                            <Button type="button" onClick={handleSave} className="session-grid-button">Добавить фильм</Button>
-                            <Button type="button" onClick={handleCancelClick} className="session-grid-button cancel">Отменить</Button>
+                            <Button type="button" onClick={handleSavePopup} className="session-grid-button">Добавить фильм</Button>
+                            <Button type="button" onClick={handleCancel} className="session-grid-button cancel">Отменить</Button>
                         </div>
                     </div>
                 </div>
@@ -210,6 +293,7 @@ function TrashDropZone({ onDeleteSeance }) {
 export default function Timeline({ halls, films }) {
   const [placements, setPlacements] = useState({});
   const { seances } = useAdminData();
+  const [isDraggingFilm, setIsDraggingFilm] = useState(false);
 
 
   useEffect(() => {
@@ -239,37 +323,78 @@ export default function Timeline({ halls, films }) {
     }));
   };
 
+  const handleDeleteFilm = async (film) => {
+    if (!film.id) return;
+
+    const confirmDelete = window.confirm(`Удалить фильм "${film.film_name}"?`);
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`https://shfe-diplom.neto-server.ru/film/${film.id}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+
+      if (result.films) {
+        setPlacements(prev => {
+          const updated = {};
+          for (const [hallId, films] of Object.entries(prev)) {
+            updated[hallId] = films.filter(f => f.id !== film.id);
+          }
+          return updated;
+        });
+      } else {
+        alert("Не удалось удалить фильм");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Ошибка удаления фильма");
+    }
+  };
+
+  const handleSaveAll = async () => {
+    try {
+      const promises = [];
+
+      for (const hallId in placements) {
+        placements[hallId].forEach(film => {
+          if (!film.seanceId) {
+            promises.push(
+              addSeance({
+                seanceHallid: hallId,
+                seanceFilmid: film.id,
+                seanceTime: film.seanceTime
+              })
+            );
+          }
+        });
+      }
+
+      await Promise.all(promises);
+
+      alert("Все сеансы успешно сохранены!");
+    } catch (e) {
+      console.error(e);
+      alert("Ошибка сохранения сеансов");
+    }
+  };
+
+  const handleCancelAll = () => {
+    setPlacements({});
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
         <div className="session-grid-all-movies">
             {films.map((film, idx) => (
-                <DraggableFilm key={`${idx}-${film.id}`} film={film}/>
+                <DraggableFilm
+                key={`${idx}-${film.id}`}
+                film={film} onDeleteFilm={handleDeleteFilm}
+                onDraggingChange={setIsDraggingFilm}/>
             ))}
         </div>
       <div className="session-grid-movies-seances">
-        <div className="session-grid-movies-seance-wrap">
-          <ul className="seance-list">
-            {Array.isArray(halls) &&
-              halls
-                .slice()
-                .sort((a, b) => {
-                  const numA = parseInt(a.hall_name.match(/\d+/)?.[0] || 0, 10);
-                  const numB = parseInt(b.hall_name.match(/\d+/)?.[0] || 0, 10);
-                  return numA - numB;
-                })
-                .map((hall) => (
-                  <li key={hall.id} className="seance-list-item">
-                    <p>{hall.hall_name}</p>
-                    <DroppableTimeline
-                      hall={hall}
-                      filmsInHall={placements[hall.id] || []}
-                      onDropFilm={handleDropFilm}
-                    />
-                  </li>
-                ))}
-          </ul>
-        </div>
-        <TrashDropZone
+       {isDraggingFilm && (<TrashDropZone
           onDeleteSeance={(seanceId) => {
             setPlacements((prev) => {
               const updated = {};
@@ -281,7 +406,34 @@ export default function Timeline({ halls, films }) {
               return updated;
             });
           }}
-        />
+        />)}
+        <div className="session-grid-movies-seance-wrap">
+          <ul className="seance-list">
+            {Array.isArray(halls) &&
+              halls
+                .slice()
+                .sort((a, b) => {
+                  const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                  const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                  return numA - numB;
+                })
+                .map((hall, index) => (
+                  <li key={hall.id ?? `${hall.hall_name}-${index}`} className="seance-list-item">
+                    <p>{hall.hall_name}</p>
+                    <DroppableTimeline
+                      hall={hall}
+                      filmsInHall={placements[hall.id] || []}
+                      onDropFilm={handleDropFilm}
+                      onDraggingChange={setIsDraggingFilm} 
+                    />
+                  </li>
+                ))}
+          </ul>
+        </div>
+      </div>
+      <div className="config-seats-confirm-buttons">
+        <Button type="button" onClick={handleCancelAll} className="config-seats-confirm-button cancel">Отмена</Button>
+        <Button type="button" onClick={handleSaveAll} className="config-seats-confirm-button save">Сохранить</Button>
       </div>
     </DndProvider>
   );

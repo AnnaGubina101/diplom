@@ -48,15 +48,15 @@
 }
 
 .buying-scheme__chair.selected {
-  background-color: rgba(37, 196, 206, 1);
+  background-color: rgba(37, 196, 206, 1) !important;
 }
 
-.closed {
+.buying-scheme__chair.closed {
   background-color: rgba(23, 29, 36, 1);
   border: 1px solid rgba(82, 82, 82, 1);
 }
 
-.vip {
+.buying-scheme__chair.vip {
   background-color: rgba(249, 149, 58, 1);
 }
 
@@ -95,7 +95,7 @@
   display: flex;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 768px){
   .header {
     box-sizing: border-box;
     padding: 0.87rem;

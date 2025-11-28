@@ -7,6 +7,8 @@ import PriceConfig from "./PriceConfig/PriceConfig"
 import './PriceConfig/PriceConfig.css'
 import SessionGrid from "./SessionGrid/SessionGrid"
 import './SessionGrid/SessionGrid.css'
+import OpenSales from "./OpenSales/OpenSales"
+import './OpenSales/OpenSales.css'
 
 export default function AdminDashboardPage() {
     return (
@@ -15,10 +17,11 @@ export default function AdminDashboardPage() {
             <div className="adminWrap">
                 <AdminHeader />
                 <div className="dashboard-wrap">
-                  <HallManagement />
-                  <HallConfig />
-                  <PriceConfig />
-                  <SessionGrid />
+                  <div className="line-wrap"><HallManagement /></div>
+                  <div className="line-wrap"><HallConfig /></div>
+                  <div className="line-wrap"><PriceConfig /></div>
+                  <div className="line-wrap"><SessionGrid /></div>
+                  <div className="line-wrap"><OpenSales /></div>
                 </div>
             </div>
         </AdminDataProvider>

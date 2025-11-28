@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-const generateGates = (daysCount = 7) => {
+export const generateGates = (daysCount = 7) => {
     const days = [];
     const today = new Date();
 
@@ -24,9 +24,7 @@ const generateGates = (daysCount = 7) => {
     return days
 }
 
-export default function Navigation() {
-    const days = generateGates(30)
-    const [selected, setSelected] = useState(days[0])
+export default function Navigation({ days, selectedDay, setSelectedDay }) {
     const stripRef = useRef(null)
 
     const scrollAmount = 6 * 70;
@@ -46,8 +44,8 @@ export default function Navigation() {
                         className={`nav-day 
                         ${day.label === "Сегодня" ? 'today': ''} 
                         ${day.isWeekend ? 'weekend' : ''} 
-                        ${selected.full === day.full ? "nav-selected" : ''}`}
-                        onClick={() => setSelected(day)}
+                        ${selectedDay.full === day.full ? "nav-selected" : ''}`}
+                        onClick={() => setSelectedDay(day)}
                         >
                             <div>{day.label ? `${day.label} ${day.day}, ` : `${day.day}, `}</div>
                             <div>{day.date}</div>

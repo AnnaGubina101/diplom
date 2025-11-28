@@ -1,6 +1,8 @@
 .dashboard-wrap {
-    width: 962px;
+    width: 100%;
     margin: 0 auto;
+    position: relative;
+    max-width: 990px;
 }
 
 .dashboard_hall-management {
@@ -10,115 +12,171 @@
 
 .dashboard-header-wrap {
     width: 100%;
-    height: 95px;
+    height: 6.785rem;
     background-color: rgba(99, 83, 108, 1);
     box-sizing: border-box;
     position: relative;
     display: flex;
     justify-content: space-between;
-    padding: 35px 40px 35px 104px;
+    padding: 2.5rem 2.857rem 2.5rem 7.428rem;
 }
 
-.circle::before {
+.circles {
+    position: absolute;
+    top: 1.785rem;
+    left: 2.5rem;
+    width: 3.142rem;
+    height: 3.142rem;
+    border-radius: 50%;
+    background-color: white;
+    border: 0.2rem solid rgba(188, 149, 214, 1);
+    z-index: 2;
+}
+
+.line-wrap {
+    position: relative;
+}
+
+.line-wrap:not(:last-child)::before {
     content: '';
     position: absolute;
-    top: 26px;
-    left: 40px;
-    width: 44px;
-    height: 44px;
-    border-radius: 22px;
-    background-color: rgba(255, 255, 255, 1);
-    border: 4px solid rgba(188, 149, 214, 1);
-    box-sizing: border-box;
+    top: 4.285rem;
+    left: 4.285rem;
+    width: 0.142rem;
+    height: calc(100% - 2.5rem);
+    background-color: rgba(188, 149, 214, 1);
+    z-index: 1;
 }
 
 .dashboard-header {
-    color: rgba(255, 255, 255, 1);
-    font-size: 22px;
+    color: #fff;
+    font-size: 1.571rem;
     font-weight: 700;
     text-transform: uppercase;
-    
 }
 
 .dashboard-header-arrow {
-    width: 24px;
-    height: 16px;
+    width: 1.5rem;
+    height: 1rem;
+    cursor: pointer;
 }
 
 .dashboard-hall-info {
-    padding-left: 104px;
-    padding-bottom: 35px;
+    padding-left: 7.428rem;
+    padding-bottom: 2.5rem;
+    padding-right: 2.1rem;
 }
 
 .additional-info {
     font-weight: 400;
-    font-size: 16px;
-    margin-bottom: 12px;
-    margin-top: 36px;
+    font-size: 1.142rem;
+    margin-bottom: 0.857rem;
+    margin-top: 2.571rem;
 }
 
 .pop-up {
-    height: 57px;
-    padding-left: 42px;
+    height: 4.071rem;
+    padding-left: 3rem;
     align-items: center;
 }
 
 .admin-config-list {
     display: flex;
-    margin-bottom: 36px;
+    margin-bottom: 2.571rem;
+    flex-wrap: wrap;
 }
 
 .admin-config-list-item {
-    list-style-type: none
+    list-style-type: none;
 }
 
 .admin-config-button {
-    width: 81px;
-    height: 42px;
+    min-width: 5.714rem;
+    height: 3rem;
     background-color: rgba(255, 255, 255, 0.45);
-    color: rgba(0, 0, 0, 1);
-    font-size: 14px;
+    color: #000;
+    font-size: 1rem;
     font-weight: 500;
     text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0.714rem;
 }
 
 .admin-config-button.selected {
-    width: 90px;
-    height: 46px;
+    min-width: 6.428rem;
+    height: 3.285rem;
     background-color: rgba(255, 255, 255, 1);
-    font-size: 15px;
+    font-size: 1.071rem;
     font-weight: 900;
 }
 
 .admin-config-seats-additional {
-    font-size: 14px;
+    font-size: 1rem;
     font-weight: 400;
     color: rgba(132, 132, 132, 1);
 }
 
 .admin-config-seats-input {
-    width: 100px;
-    height: 36px;
+    width: 7.142rem;
+    height: 2.571rem;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 .admin-config-seat {
-    width: 26px;
-    height: 26px;
-    border-radius: 4px;
+    width: 1.857rem;
+    height: 1.857rem;
+    border-radius: 0.285rem;
 }
 
 .standart {
     background-color: rgba(196, 196, 196, 1);
-    border: 1px solid rgba(57, 57, 57, 1);
+    border: 0.071rem solid rgba(57, 57, 57, 1);
 }
 
 .vip {
     background-color: rgba(176, 214, 216, 1);
-    border: 1px solid rgba(10, 130, 138, 1);
+    border: 0.071rem solid rgba(10, 130, 138, 1);
     background-image: url(../../../assets/bgi-for-vip.png);
 }
 
 .disabled {
     background-color: rgba(234, 233, 235, 0.95);
-    border: 1px solid rgba(196, 196, 196, 1);
+    border: 0.071rem solid rgba(196, 196, 196, 1);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-wrap {
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+    .circles {
+        width: 1rem;
+        height: 1rem;
+        left: 1.25rem;
+        top: 1.3rem;
+    }
+
+    .line-wrap::before {
+        display: none;
+    }
+
+    .dashboard-header-wrap {
+        height: 4rem;
+        padding: 1.2rem 1.5rem 1.2rem 4.18rem;
+    }
+
+    .dashboard-header {
+        font-size: 1.3rem;
+    }
+
+    .dashboard-hall-info {
+        padding-left: 2rem;
+    }
+
+    .additional-info {
+        margin-top: 2rem;
+    }
 }

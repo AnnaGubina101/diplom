@@ -2,9 +2,9 @@ import Button from "../../../Components/Button";
 import arrow from "/src/assets/admin-dashboard-arrow.png";
 import { useState, useEffect, useRef } from "react";
 import { addMovie } from "../../../Api/addMovie";
-import deleteBin from "../../../assets/delete-bin.png"
-import useHallsData from "../../../Components/useHallsData";
+import { useAdminData } from "../../../Api/AdminDataProvider";
 import Timeline from "./Timeline";
+import CollapsibleBlock from "../../../Components/CollapsibleBlock";
 
 export default function SessionGrid() {
     const [isAdding, setIsAdding] = useState(false);
@@ -13,12 +13,10 @@ export default function SessionGrid() {
     const [filmDuration, setFilmDuration] = useState("");
     const [filmDescription, setFilmDescription] = useState("");
     const [filmOrigin, setFilmOrigin] = useState("");
-    const [filmPoster, setFilmPoster] = useState(null);
-
-    const [films, setFilms] = useState([]);
+    const [filePoster, setFilePoster] = useState(null);
     const fileInputRef = useRef(null);
 
-    const { halls } = useHallsData();
+    const { halls, films, setFilms } = useAdminData();
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -36,7 +34,7 @@ export default function SessionGrid() {
             return;
         }
 
-        setFilmPoster(file);
+        setFilePoster(file);
     };
 
     const handleAddClick = () => {
@@ -44,7 +42,7 @@ export default function SessionGrid() {
     }
 
     const handleSaveClick = async () => {
-        if (!filmName || !filmDuration || !filmPoster) {
+        if (!filmName || !filmDuration || !filePoster) {
             return alert("Заполните все поля и выберите постер");
         }
 
@@ -63,13 +61,12 @@ export default function SessionGrid() {
                 setFilms(prev => [...prev, result.result.newFilm]);
             }
 
-            alert("Фильм успешно добавлен!");
             setIsAdding(false);
             setFilmName("");
             setFilmDuration("");
             setFilmOrigin("");
             setFilmDescription("");
-            setFilmPoster(null);
+            setFilePoster(null);
 
             return alert("Фильм успешно добавлен!");
         } catch (error) {
@@ -82,42 +79,9 @@ export default function SessionGrid() {
         setIsAdding(false);
     }
 
-    useEffect(() => {
-        fetch("https://shfe-diplom.neto-server.ru/alldata")
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.success && data.result.films) setFilms(data.result.films);
-        })
-        .catch((err) => console.error("Ошибка загрузки фильмов:", err));
-    }, []);
-
-    const handleDelete = async (filmId) => {
-        try {
-            const response = await fetch(`https://shfe-diplom.neto-server.ru/alldata/${filmId}`, {
-            method: "DELETE",
-            });
-            const result = await response.json();
-            if (result.success) {
-                setFilms((prev) => prev.filter((f) => f.id !== filmId));
-            } else {
-                alert("Не удалось удалить фильм");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("Ошибка удаления фильма");
-        }
-    };
-
-    const colors = ["rgba(202, 255, 133, 1)", "rgba(133, 255, 137, 1)", "rgba(133, 255, 211, 1)", "rgba(133, 226, 255, 1)", "rgba(133, 153, 255, 1)"];
-
-
-    
     return (
         <div className="dashboard_hall-management">
-            <div className="dashboard-header-wrap circle">
-                <h2 className="dashboard-header">Сетка сеансов</h2>
-                <img src={arrow} alt="arrow" className="dashboard-header-arrow"/>
-            </div>
+            <CollapsibleBlock title='Сетка сеансов'>
             <div className="dashboard-hall-info">
                 {!isAdding ? (<Button className="session-grid-add-film-button" onClick={handleAddClick}
                 >Добавить фильм</Button>) : 
@@ -190,6 +154,7 @@ export default function SessionGrid() {
                 }
                <Timeline halls={halls} films={films} />
             </div>
+            </CollapsibleBlock>
         </div>
     )
 }

@@ -1,7 +1,7 @@
 .price-config-seats-price-wrap {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 0.125rem;
 }
 
 .price-config-seats-price {
@@ -10,5 +10,5 @@
 }
 
 .additional-info.price-config {
-    height: 36px;
+    height: 2.25rem;
 }

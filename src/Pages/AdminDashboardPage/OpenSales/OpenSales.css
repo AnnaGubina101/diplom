@@ -1,0 +1,11 @@
+.open-sales-button-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.open-sales-button {
+    width: 19.2rem;
+    height: 2.857rem;
+}

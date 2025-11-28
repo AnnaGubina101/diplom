@@ -2,12 +2,13 @@ import Button from "../../../Components/Button";
 import arrow from "/src/assets/admin-dashboard-arrow.png";
 import deleteBin from '/src/assets/delete-bin.png';
 import { addHall } from "../../../Api/addhall";
-import { useState, useEffect } from "react";
-import useHallsData from '../../../Components/useHallsData'
+import { useState } from "react";
+import { useAdminData } from "../../../Api/AdminDataProvider";
 import deleteHall from "../../../Api/deleteHall";
+import CollapsibleBlock from "../../../Components/CollapsibleBlock";
 
 export default function HallManagement() {
-    const { halls, setHalls } = useHallsData();
+    const { halls, setHalls } = useAdminData();
     const [newHallName, setNewHallName] = useState('')
     const [isAdding, setIsAdding] = useState(false)
     
@@ -49,21 +50,18 @@ export default function HallManagement() {
 
     return (
         <div className="dashboard_hall-management">
-            <div className="dashboard-header-wrap circle">
-                <h2 className="dashboard-header">Управление залами</h2>
-                <img src={arrow} alt="arrow" className="dashboard-header-arrow"/>
-            </div>
+            <CollapsibleBlock title='Управление залами'>
             <div className="dashboard-hall-info">
                 <p className="additional-info">Доступные залы:</p>
                 <ul className="hall-management-list">
                     {Array.isArray(halls) && halls
                     .slice()
                     .sort((a, b) => {
-                        const numA = parseInt(a.hall_name.match(/\d+/)?.[0] || 0, 10);
-                        const numB = parseInt(b.hall_name.match(/\d+/)?.[0] || 0, 10);
+                        const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                        const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
                         return numA - numB;})
-                    .map(hall => (
-                        <li key={hall.id} className="hall-management-list-item">{hall.hall_name}
+                    .map((hall, index) => (
+                        <li key={hall.id ?? `${hall.hall_name}-${index}`} className="hall-management-list-item">{hall.hall_name}
                             <Button 
                             onClick={() => handleDeleteClick(hall.id)}
                             className="hall-delete-button">
@@ -101,6 +99,7 @@ export default function HallManagement() {
                 </div>)
                 }
             </div>
+            </CollapsibleBlock>
         </div>
     )
 }   

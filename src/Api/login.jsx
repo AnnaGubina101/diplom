@@ -1,10 +1,10 @@
-export default async function login() {
+export default async function login(email, password) {
     const formData = new FormData();
     formData.append('login', email);
     formData.append('password', password);
 
     try {
-        const response = await fetch(`${API_BASE}/login`, {
+        const response = await fetch(`https://shfe-diplom.neto-server.ru/login`, {
             method: 'POST',
             body: formData,
         });

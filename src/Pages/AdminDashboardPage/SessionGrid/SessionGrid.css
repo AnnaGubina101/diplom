@@ -1,5 +1,6 @@
 .session-grid-add-popup-form {
-    width: 960px;
+    width: 60rem;
+    min-height: 27.14rem;
     margin: 0 auto;
     background: rgba(234, 233, 235, 0.95);
     z-index: 1001;
@@ -7,11 +8,11 @@
 }
 
 .session-grid-add-popup-form.movie {
-    min-height: 464px;
+    min-height: 33.14rem;
 }
 
 .session-grid-new-item {
-    width: 960px;
+    width: 100%;
     height: 100%;
 }
 
@@ -20,28 +21,28 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 34px;
-    margin-bottom: 42px;
-    gap: 8px;
+    margin-top: 2.43rem;
+    margin-bottom: 3rem;
+    gap: 0.57rem;
 }
 
 .session-grid-list-label {
-    font-size: 12px;
+    font-size: 0.86rem;
     font-weight: 400;
     color: rgba(132, 132, 132, 1);
 }
 
 .session-grid-list-input {
-    width: 750px;
-    height: 35px;
-    padding: 8px;
+    width: 53.57rem;
+    height: 2.5rem;
+    padding: 0.57rem;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 1.14rem;
     border: 1px solid rgba(183, 183, 183, 1);
 }
 
 .session-grid-list-input.description {
-    min-height: 80px;
+    min-height: 5.71rem;
 }
 
 .session-grid-list-wrap {
@@ -51,96 +52,98 @@
 
 .session-grid-pop-up-buttons {
     display: flex;
-    gap: 14px;
+    gap: 1rem;
     align-items: center;
     justify-content: center;
-    margin-bottom: 35px;
+    margin-bottom: 2.5rem;
 }
 
 .session-grid-button {
-    width: 194px;
-    height: 40px;
+    width: 13.86rem;
+    height: 2.86rem;
 }
 
 .session-grid-button.cancel {
-    width: 139px;
+    width: 9.93rem;
     background-color: rgba(255, 255, 255, 1);
     color: rgba(99, 83, 108, 1);
 }
 
 .session-grid-add-film-button {
-    margin-top: 52px;
-    width: 194px;
-    height: 40px;
+    margin-top: 3.71rem;
+    width: 13.86rem;
+    height: 2.86rem;
 }
 
 .session-grid-all-movies {
     display: flex;
-    gap: 15px;
+    gap: 1.07rem;
     flex-wrap: wrap;
-    margin-top: 12px;
-    margin-bottom: 50px;
+    margin-top: 0.86rem;
+    margin-bottom: 3.57rem;
 }
 
 .session-grid-movie {
-    width: 260px;
-    height: 52px;
+    width: 16.25rem;
+    height: 3.71rem;
     display: flex;
     position: relative;
-    gap: 10px;
+    gap: 0.71rem;
     cursor: grab;
 }
 
 .session-grid-movie-poster {
-    width: 38px;
-    height: 50px;
+    width: 2.71rem;
+    height: 3.57rem;
 }
 
 .session-grid-movie-title {
     font-weight: 500;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .session-grid-movie-duration {
     font-weight: 400;
-    font-size: 14px;
+    font-size: 1rem;
     color: rgba(0, 0, 0, 0.7);
 }
 
 .session-grid-movie-delete-btn {
-    width: 20px;
-    height: 20px;
+    width: 1.43rem;
+    height: 1.43rem;
     background-color: rgba(255, 255, 255, 1);
     content: '';
     position: absolute;
     bottom: 0;
     right: 0;
     border: none;
-    border-radius: 3px;
-    box-shadow: 0px 0.18rem 0.18rem rgba(0, 0, 0, 0.24);
-    margin: 1px;
+    border-radius: 0.21rem;
+    box-shadow: 0px 0.13rem 0.13rem rgba(0, 0, 0, 0.24);
+    margin: 0.07rem;
 }
 
 .movie-delete-img {
-    width: 12px;
-    height: 12px;
-}
-
-.session-grid-add-popup-form {
-    min-height: 380px;
+    width: 0.86rem;
+    height: 0.86rem;
 }
 
 .session-grid-list-select {
-    width: 753px;
-    height: 36px;
-    font-size: 16px;
-    padding: 8px 12px;
+    width: 53.79rem;
+    height: 2.57rem;
+    font-size: 1.14rem;
+    padding: 0.57rem 0.86rem;
     border: 1px solid rgba(183, 183, 183, 1);
 }
 
+.seance-list {
+  width: 90%;
+}
+
 .seance-list-item {
+    align-items: center;
+    width: 100%;
     list-style: none;
-    font-size: 16px;
+    font-size: 1.14rem;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -148,6 +151,110 @@
 .session-grid-movies-seance-wrap {
     display: flex;
     flex-direction: column;
-    width: 816px;
+    width: 100%;
+    max-width: 52rem;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.session-grid-movie-time {
+    font-size: 1.07rem;
+    font-weight: 400;
+    color: rgba(132, 132, 132, 1);
+    position: relative;
+}
+
+.session-grid-movie-time::before {
+    position: absolute;
+    content: '';
+    left: 0;
+    top: -0.21rem;
+    height: 0.36rem;
+    width: 0.07rem;
+    background-color: rgba(132, 132, 132, 1);
+}
+
+.session-grid-movies-seances {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.timeline-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.timeline-container {
+    width: 100%;
+    height: 4.285rem;
+    border: 1px solid rgba(132, 132, 132, 1);
+    display: flex;
+    align-items: center;
+    padding: 0.714rem;
+    box-sizing: border-box;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.trash-drop-zone-img {
+    margin: 0.5rem;
+}
+
+@media (max-width: 769px) {
+    .session-grid-add-popup-form {
+        width: 100%;
+    }
+
+    .session-grid-list-wrap {
+        width: 100%;
+    }
+
+    .session-grid-new-item-list {
+        box-sizing: border-box;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .session-grid-list-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .session-grid-add-film-button {
+        margin-bottom: 2.25rem;
+        margin-top: 3.25rem;
+    }
+
+    .session-grid-list-wrap {
+        width: 100%;
+    }
+
+    .session-grid-new-item {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .session-grid-list-input {
+        width: 23.1rem;
+    }
+
+    .session-grid-pop-up-buttons {
+        flex-direction: column;
+    }
+
+    .session-grid-button {
+        width: 12.5rem;
+    }
+
+    .session-grid-button.cancel {
+        width: 12.5rem;
+    }
+
+    .session-grid-list-select {
+        width: 23.125rem;
+    }
 }

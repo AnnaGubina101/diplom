@@ -1,69 +1,116 @@
-import { useState } from "react"
+import React, { useEffect, useState } from "react";
+import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 
-export default function Seats() {
-    const seatsWithFlags = buyingScheme.map(row =>
-        row.map(seat => {
-        if (!seat) return null;
-        return {
-            ...seat,
-            isSelected: seat.isSelected ?? false,
-            isVip: seat.isVip ?? false,
-            isBooked: seat.isBooked ?? false
-        };
-        })
-    )
-    const [seats, setSeats] = useState(seatsWithFlags)
+export default function Seats({ seance, hall }) {
+  const { selectedSeats, setSelectedSeats } = useSelectedSeats();
+  const [seatMap, setSeatMap] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const handleClick = (rowIndex, seatIndex) => {
-        const allSeats = [...seats]
-        const seat = allSeats[rowIndex][seatIndex];
+  const ticketDate = new Date().toISOString().split("T")[0];
 
-        if (seat.isBooked) return;
+  useEffect(() => {
+    async function loadConfig() {
+      setLoading(true);
 
-        seat.isSelected = !seat.isSelected;
-        setSeats(allSeats);
+      const res = await fetch(
+        `https://shfe-diplom.neto-server.ru/hallconfig?seanceId=${seance.id}&date=${ticketDate}`
+      );
+
+      const json = await res.json();
+
+      const cfg = Array.isArray(json)
+        ? json
+        : Array.isArray(json.result)
+        ? json.result
+        : [];
+
+      setSeatMap(cfg);
+      setLoading(false);
     }
 
-    return (
-        <div className="buying-scheme">
-            <div className='buying-scheme__wrapper'>
-                {seats.map((row, rowIndex) => (
-                    <div key={rowIndex} className="buying-scheme__row">
-                        {row.map((seat, seatIndex) => seat ? (
-                                <button
-                                    key={`${seat.row}-${seat.seat}`}
-                                    className={`buying-scheme__chair 
-                                        ${seat.isBooked ? 'closed' : ''}
-                                        ${seat.isSelected ? 'selected' : ''}
-                                        ${seat.isVip ? 'vip' : ''}`}
-                                    onClick={() => handleClick(rowIndex, seatIndex)}
-                                ></button>
-                            ) : (<div key={`empty-${rowIndex}-${seatIndex}`} className="empty-seat"></div>))}
-                        </div>
-                    ))}
-            </div>
-            <div className="buying-scheme__legend">
-                <div className="buying-scheme__legend-price">
-                        <div className="status">
-                            <button className="buying-scheme__chair open"></button>
-                            <p className="buying-scheme__legend-text"> Свободно (250руб)</p>
-                        </div>
-                        <div className="status">
-                            <button className="buying-scheme__chair vip"></button>
-                            <p className="buying-scheme__legend-text"> Свободно VIP (350руб)</p>
-                        </div>
-                </div>
-                <div className="buying-scheme__legend-price">
-                    <div className="status">
-                        <button className="buying-scheme__chair closed"></button>
-                        <p className="buying-scheme__legend-text">Занято</p>
-                    </div>
-                    <div className="status">
-                        <button className="buying-scheme__chair selected"></button>
-                        <p className="buying-scheme__legend-text"> Выбрано</p>
-                    </div>
-                </div>
-            </div>
+    loadConfig();
+  }, [seance.id]);
+
+  const toggleSeat = (rowIndex, seatIndex) => {
+    const seatType = seatMap[rowIndex][seatIndex];
+
+    if (seatType === "taken" || seatType === "disabled") return;
+
+    const key = `${rowIndex}-${seatIndex}`;
+    const seatObj = {
+      key,
+      row: rowIndex,
+      seat: seatIndex,
+      type: seatType,
+    };
+
+    if (selectedSeats.some((s) => s.key === key)) {
+      setSelectedSeats(selectedSeats.filter((s) => s.key !== key));
+    } else {
+      setSelectedSeats([...selectedSeats, seatObj]);
+    }
+  };
+
+  if (loading) return <p>Загрузка мест...</p>;
+
+  return (
+    <div className="buying-scheme">
+      <div className="buying-scheme__wrapper">
+        {seatMap.map((row, rowIndex) => (
+          <div key={rowIndex} className="buying-scheme__row">
+            {row.map((seatType, seatIndex) => {
+              if (seatType === "disabled")
+                return <div key={seatIndex} className="empty-seat" />;
+
+              const key = `${rowIndex}-${seatIndex}`;
+              const isSelected = selectedSeats.some((s) => s.key === key);
+
+              return (
+                <button
+                  key={seatIndex}
+                  className={`
+                    buying-scheme__chair
+                    ${seatType}
+                    ${isSelected ? "selected" : ""}
+                    ${seatType === "taken" ? "closed" : ""}
+                  `}
+                  disabled={seatType === "taken"}
+                  onClick={() => toggleSeat(rowIndex, seatIndex)}
+                ></button>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      {/* Легенда */}
+      <div className="buying-scheme__legend">
+        <div className="buying-scheme__legend-price">
+          <div className="status">
+            <button className="buying-scheme__chair open"></button>
+            <p className="buying-scheme__legend-text">
+              Свободно ({hall.hall_price_standart}руб)
+            </p>
+          </div>
+          <div className="status">
+            <button className="buying-scheme__chair vip"></button>
+            <p className="buying-scheme__legend-text">
+              Свободно VIP ({hall.hall_price_vip}руб)
+            </p>
+          </div>
         </div>
-    )
+
+        <div className="buying-scheme__legend-price">
+          <div className="status">
+            <button className="buying-scheme__chair closed"></button>
+            <p className="buying-scheme__legend-text">Занято</p>
+          </div>
+          <div className="status">
+            <button className="buying-scheme__chair selected"></button>
+            <p className="buying-scheme__legend-text">Выбрано</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,0 +1,5 @@
+.qr-code {
+    display: flex;
+    justify-content: center;
+    margin: 2.1rem;
+}

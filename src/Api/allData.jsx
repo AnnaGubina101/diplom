@@ -1,7 +1,5 @@
-const API_URL = "https://shfe-diplom.neto-server.ru";
-
 export async function getAllData() {
-  const res = await fetch(`${API_URL}/alldata`);
+  const res = await fetch("https://shfe-diplom.neto-server.ru/alldata");
   if (!res.ok) {
     throw new Error("Ошибка при получении данных");
   }

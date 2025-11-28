@@ -2,16 +2,22 @@ import Button from "../../Components/Button"
 import AdminHeader from "../../Components/AdminHeader"
 import login from "../../Api/login"
 import { useState } from "react"
+import { useNavigate } from 'react-router-dom';
 
-export default function AdminLoginPage() {
+export default function AdminLoginPage({ setIsLoggedIn }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
-        if(email !== "shfe-diplom@netology.ru" || password !== "shfe-diplom") {
-            console.error("Ошибка!")
-        }
         const result = await login(email, password);
+        if(result) {
+            setIsLoggedIn(true);
+            navigate('/dashboard'); 
+        }
+        else if (email !== "shfe-diplom@netology.ru" || password !== "shfe-diplom") {
+            alert("Ошибка!")
+        }
     }
 
     return (
@@ -33,7 +39,7 @@ export default function AdminLoginPage() {
 
                     <label htmlFor="password" className="adminLogin-form_label">Пароль</label>
                     <input
-                        type="text"
+                        type="password"
                         id="password"
                         className="adminLogin-form_input"
                         value={password}

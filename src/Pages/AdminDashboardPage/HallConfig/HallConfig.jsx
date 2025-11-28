@@ -1,50 +1,65 @@
 import arrow from "/src/assets/admin-dashboard-arrow.png";
 import '../HallConfig/HallConfig.css';
 import { useState, useEffect } from "react";
-import useHallsData from '../../../Components/useHallsData'
+import { useAdminData } from "../../../Api/AdminDataProvider";
 import Button from "../../../Components/Button";
 import { updateHallConfig } from "../../../Api/updateHallConfig";
+import CollapsibleBlock from "../../../Components/CollapsibleBlock";
 
 export default function HallConfig() {
-    const { halls, setHalls } = useHallsData();
+    const { halls, setHalls } = useAdminData();
     const [selectedHallId, setSelectedHallId] = useState(null);
     const [rows, setRows] = useState(0);
     const [seats, setSeats] = useState(0);
-    const [seatLayout, setSeatLayout] = useState([])
+    const [seatLayout, setSeatLayout] = useState([]);
+    const [originalHallState, setOriginalHallState] = useState(null);
 
     useEffect(() => {
-    if (!selectedHallId) return;
+        if (halls.length > 0 && selectedHallId === null) {
+            const sorted = halls
+                .slice()
+                .sort((a, b) => {
+                    const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                    const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                    return numA - numB;
+                });
 
-    const selectedHall = halls.find(h => h.id === selectedHallId);
-
-    if (selectedHall && selectedHall.hall_config) {
-        let parsedConfig = [];
-        try {
-            parsedConfig = JSON.parse(selectedHall.hall_config);
-        } catch {
-            parsedConfig = [];
+            setSelectedHallId(sorted[0].id);
         }
-
-        setSeatLayout(parsedConfig);
-        setRows(selectedHall.hall_rows);
-        setSeats(selectedHall.hall_places);
-    }
-}, [selectedHallId, halls]);
+    }, [halls, selectedHallId]);
 
     useEffect(() => {
-        if (seatLayout.length > 0) return;
+        if (!selectedHallId) return;
 
-        setSeatLayout(prev => {
-            const newLayout = [];
-            for (let r = 0; r < rows; r++) {
+        const selectedHall = halls.find(h => h.id === selectedHallId) || {};
+        if (!selectedHall) return;
+
+        const initialState = {
+            rows: selectedHall.hall_rows,
+            seats: selectedHall.hall_places,
+            layout: selectedHall.hall_config
+        };
+
+        setOriginalHallState(initialState);
+        setSeatLayout(initialState.layout);
+        setRows(initialState.rows);
+        setSeats(initialState.seats);
+    }, [selectedHallId, halls]);
+
+    useEffect(() => {
+    const generateLayout = (rows, seats, prevLayout) => {
+        const newLayout = [];
+        for (let r = 0; r < rows; r++) {
             const row = [];
             for (let s = 0; s < seats; s++) {
-                row.push(prev[r]?.[s] || "standart");
+                row.push(prevLayout?.[r]?.[s] || "standart");
             }
             newLayout.push(row);
-            }
-            return newLayout;
-        });
+        }
+        return newLayout;
+        };
+
+        setSeatLayout(prev => generateLayout(rows, seats, prev));
     }, [rows, seats]);
 
     const handleSeatClick = (rowIndex, seatIndex) => {
@@ -62,7 +77,16 @@ export default function HallConfig() {
         );
     }
 
+    const handleCancel = () => {
+        if (!originalHallState) return;
+
+        setRows(originalHallState.rows);
+        setSeats(originalHallState.seats);
+        setSeatLayout(originalHallState.layout);
+    };
+
     const renderSeats = () => {
+         if (!seatLayout || seatLayout.length === 0) return null;
          return seatLayout.map((row, rowIndex) => (
             <div key={rowIndex} className="hall-config-row">
                 {row.map((seat, seatIndex) => {
@@ -81,13 +105,13 @@ export default function HallConfig() {
         ));
     }
 
-    const handleSaveClick = () => {
+    const handleSaveClick = async () => {
         if(!selectedHallId) {
             return alert("Выберите зал перед сохранением!")
         }
 
         try {
-            const response = updateHallConfig(selectedHallId, rows, seats, seatLayout);
+            const response = await updateHallConfig(selectedHallId, rows, seats, seatLayout);
             if(response.success) {
                 const updatedHall = response.result;
                 setHalls(prev => prev.map(h => h.id === updatedHall.id ? updatedHall : h));
@@ -102,22 +126,19 @@ export default function HallConfig() {
     }
 
     return (
-        <div className="dashboard_hall-config">
-            <div className="dashboard-header-wrap circle">
-                <h2 className="dashboard-header">Конфигурация залов</h2>
-                <img src={arrow} alt="arrow" className="dashboard-header-arrow"/>
-            </div>
+        <div className="dashboard_hall-management">
+            <CollapsibleBlock title='Конфигурация залов'>
             <div className="dashboard-hall-info">
                 <p className="additional-info">Выберите зал для конфигурации:</p>
                 <ul className="admin-config-list">
                     {Array.isArray(halls) && halls
                     .slice()
                     .sort((a, b) => {
-                        const numA = parseInt(a.hall_name.match(/\d+/)?.[0] || 0, 10);
-                        const numB = parseInt(b.hall_name.match(/\d+/)?.[0] || 0, 10);
+                        const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                        const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
                         return numA - numB;})
-                    .map(hall => (
-                        <li key={hall.id} className="admin-config-list-item">
+                    .map((hall, index) => (
+                        <li key={hall.id ?? `${hall.hall_name}-${index}`} className="admin-config-list-item">
                             <Button
                             className={`admin-config-button ${selectedHallId === hall.id ? "selected" : ""}`}
                             onClick={() => setSelectedHallId(hall.id)}
@@ -134,7 +155,7 @@ export default function HallConfig() {
                         type="text"
                         id="seats-config-row" 
                         className="admin-config-seats-input"
-                        value={rows}
+                        value={rows ?? 0}
                         onChange={(e) => setRows(Number(e.target.value))}
                         />
                     </div>
@@ -145,19 +166,25 @@ export default function HallConfig() {
                         type="text"
                         id="seats-config-seat"
                         className="admin-config-seats-input" 
-                        value={seats}
+                        value={seats ?? 0}
                         onChange={(e) => setSeats(Number(e.target.value))}
                         />
                     </div>
                 </div>
                 <p className="additional-info">Теперь вы можете указать типы кресел на схеме зала:</p>
                 <div className="hall-config-seats-info">
+                    <div className="hall-config-seats-btn-wrap">
                         <button className="admin-config-seat standart"></button>
                         <p className="hall-config-seats-additional info">  — обычные кресла</p>
+                    </div>
+                    <div className="hall-config-seats-btn-wrap">
                         <button className="admin-config-seat vip"></button>
                         <p className="hall-config-seats-additional info">  — VIP кресла</p>
+                    </div>
+                    <div className="hall-config-seats-btn-wrap">
                         <button className="admin-config-seat disabled"></button>
                         <p className="hall-config-seats-additional info"> — заблокированные (нет кресла)</p>
+                    </div>
                 </div>
                 <p className="hall-config-seats-additional">Чтобы изменить вид кресла, нажмите по нему левой кнопкой мыши</p>
                 <div className="hall-config-seats-screen">
@@ -168,6 +195,7 @@ export default function HallConfig() {
                     <Button 
                     className="config-seats-confirm-button cancel"
                     type="button"
+                    onClick={handleCancel}
                     >Отмена</Button>
                     <Button 
                     className="config-seats-confirm-button save"
@@ -176,6 +204,7 @@ export default function HallConfig() {
                     >Сохранить</Button>
                 </div>
             </div>
+            </CollapsibleBlock>
         </div>
     )
 }

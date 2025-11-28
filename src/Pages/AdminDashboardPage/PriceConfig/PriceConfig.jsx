@@ -1,14 +1,29 @@
 import Button from "../../../Components/Button";
 import arrow from "/src/assets/admin-dashboard-arrow.png";
-import useHallsData from '../../../Components/useHallsData'
+import { useAdminData } from '../../../Api/AdminDataProvider'
 import { useState, useEffect } from "react";
 import { updatePriceConfig } from "../../../Api/updatePriceConfig";
+import CollapsibleBlock from "../../../Components/CollapsibleBlock";
 
 export default function PriceConfig() {
-    const { halls, setHalls } = useHallsData();
+    const { halls, setHalls } = useAdminData();
     const [selectedHallId, setSelectedHallId] = useState(null);
     const [priceStandart, setPriceStandart] = useState('');
     const [priceVip, setPriceVip] = useState('');
+
+    useEffect(() => {
+        if (halls.length > 0 && selectedHallId === null) {
+            const sorted = halls
+                .slice()
+                .sort((a, b) => {
+                    const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                    const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                    return numA - numB;
+                });
+
+            setSelectedHallId(sorted[0].id);
+        }
+    }, [halls, selectedHallId]);
 
     useEffect(() => {
         if(selectedHallId) {
@@ -54,21 +69,18 @@ export default function PriceConfig() {
 
    return (
     <div className="dashboard_hall-management">
-        <div className="dashboard-header-wrap circle">
-            <h2 className="dashboard-header">Конфигурация цен</h2>
-            <img src={arrow} alt="arrow" className="dashboard-header-arrow"/>
-        </div>
+        <CollapsibleBlock title='Конфигурация цен'>
         <div className="dashboard-hall-info">
-            <p className="additional-info">Доступные залы:</p>
+            <p className="additional-info">Выберите зал для конфигурации:</p>
             <ul className="admin-config-list">
                 {Array.isArray(halls) && halls
                 .slice()
                 .sort((a, b) => {
-                    const numA = parseInt(a.hall_name.match(/\d+/)?.[0] || 0, 10);
-                    const numB = parseInt(b.hall_name.match(/\d+/)?.[0] || 0, 10);
+                    const numA = parseInt(a.hall_name?.match(/\d+/)?.[0] || 0, 10);
+                    const numB = parseInt(b.hall_name?.match(/\d+/)?.[0] || 0, 10);
                     return numA - numB;})
-                .map(hall => (
-                    <li key={hall.id} className="admin-config-list-item">
+                .map((hall, index) => (
+                    <li key={hall.id ?? `${hall.hall_name}-${index}`} className="admin-config-list-item">
                         <Button
                         className={`admin-config-button ${selectedHallId === hall.id ? "selected" : ""}`}
                         onClick={() => setSelectedHallId(hall.id)}
@@ -121,6 +133,7 @@ export default function PriceConfig() {
                 >Сохранить</Button>
             </div>
         </div>
+        </CollapsibleBlock>
     </div>
    )
 }
