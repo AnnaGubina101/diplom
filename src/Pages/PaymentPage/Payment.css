@@ -68,12 +68,12 @@
 
 .cut-line::before {
     top: -0.214rem;
-    background-image: url("../src/assets/ticket-frame-top.png");
+    background-image: url("../../assets/ticket-frame-top.png");
 }
 
 .cut-line::after {
     bottom: -0.214rem;
-    background-image: url("../src/assets/ticket-frame-bottom.png");
+    background-image: url("../../assets/ticket-frame-bottom.png");
 }
 
 @media (max-width: 768px){

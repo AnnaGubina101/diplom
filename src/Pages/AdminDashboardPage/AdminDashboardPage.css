@@ -137,7 +137,7 @@
 .vip {
     background-color: rgba(176, 214, 216, 1);
     border: 0.071rem solid rgba(10, 130, 138, 1);
-    background-image: url(../../../assets/bgi-for-vip.png);
+    background-image: url('../../assets/bgi-for-vip.png');
 }
 
 .disabled {

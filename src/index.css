@@ -15,7 +15,7 @@ button {
 .wrap {
   width: 100%;
   min-height: 100vh;
-  background-image: url(../src/assets/main-background.jpg);
+  background-image: url('../src/assets/main-background.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -24,7 +24,7 @@ button {
 .adminWrap {
   width: 100%;
   min-height: 100vh;
-  background-image: url(../src/assets/main-admin-background.jpg);
+  background-image: url('../src/assets/main-admin-background.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

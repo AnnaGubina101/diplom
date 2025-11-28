@@ -14,7 +14,7 @@
   max-width: 284px;
   margin: 0 auto;
   margin-bottom: 2rem;
-  background-image: url(../src/assets/hall-screen.png);
+  background-image: url('../../assets/hall-screen.png');
   background-repeat: no-repeat;
   background-position: top;
   background-size: contain;
@@ -58,6 +58,7 @@
 
 .buying-scheme__chair.vip {
   background-color: rgba(249, 149, 58, 1);
+  background-image: none;
 }
 
 .empty-seat {
@@ -110,7 +111,7 @@
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    background-image: url(/src/assets/tap-icon.png);
+    background-image: url('../../assets/tap-icon.png');
     background-repeat: no-repeat;
     background-size: 1.5rem;
     background-position: left center;
