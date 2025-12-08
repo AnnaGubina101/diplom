@@ -6,11 +6,25 @@ import { useEffect, useRef, useState } from "react";
 import { buyTicket } from "../../Api/buyTicket";
 import QRcode from "../../Components/QRcode";
 
+const getDisplayRow = (seat) => {
+    if (seat.ticket_row !== undefined) {
+        return seat.ticket_row;
+    }
+    return seat.row + 1;
+};
+
+const getDisplayPlace = (seat) => {
+    if (seat.ticket_place !== undefined) {
+        return seat.ticket_place;
+    }
+    return seat.seat + 1; 
+};
+
 export default function TicketPage() {
     const { seanceId } = useParams();
     const location = useLocation();
     const { seances, films, halls } = useAdminData();
-    const { selectedSeats } = useSelectedSeats();
+    const { selectedSeats, clearSelectedSeats } = useSelectedSeats();
     const [ticketData, setTicketData] = useState(null);
     const hasRequestedRef = useRef(false);
 
@@ -45,14 +59,23 @@ export default function TicketPage() {
                 setTicketData({
                     tickets: resultTickets,
                     date: ticketDate
-                });;
+                });
+                clearSelectedSeats();
             }
         }
 
         purchase();
-    }, [seance, hall, selectedSeats, ticketDate]);
+    }, [seance, hall, selectedSeats, ticketDate, clearSelectedSeats]);
 
-    const totalPrice = selectedSeats.reduce((sum, s) => {
+    const displaySeats = ticketData ? ticketData.tickets : selectedSeats;
+
+       if (displaySeats.length === 0) {
+        if (!ticketData) {
+             return <p>Ошибка: места не выбраны или данные не загружены.</p>;
+        }
+    }
+
+    const totalPrice = displaySeats.reduce((sum, s) => {
         const price =
             s.type === "vip"
                 ? Number(hall.hall_price_vip)
@@ -65,8 +88,8 @@ export default function TicketPage() {
         Дата: ticketData?.date || ticketDate,
         Время: seance.seance_time,
         Зал: hall.hall_name,
-        Ряд: selectedSeats[0].row + 1,
-        Место: selectedSeats.map(s => s.seat + 1).join(", "),
+        Ряд: getDisplayRow(displaySeats[0]),
+        Место: displaySeats.map(s => getDisplayPlace(s)).join(", "),
         Цена: totalPrice,
         Важно: "Билет действителен строго на свой сеанс"
     });
@@ -85,8 +108,8 @@ export default function TicketPage() {
                         <div className="payment-main__ticket-info">
                             <p className="ticket-info">На фильм: <strong>{film?.film_name}</strong></p>
                             <p className="ticket-info">Места: <strong>
-                                {selectedSeats
-                                .map(s => `${s.row + 1} ряд, ${s.seat + 1} место`)
+                                {displaySeats
+                                .map(s => `${getDisplayRow(s)} ряд, ${getDisplayPlace(s)} место`)
                                 .join("; ")}</strong></p>
                             <p className="ticket-info">В зале: <strong>{hall?.hall_name}</strong></p>
                             <p className="ticket-info">Начало сеанса: <strong>{seance.seance_time}</strong></p>
