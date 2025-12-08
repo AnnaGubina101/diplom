@@ -45,11 +45,12 @@ export default function Seats({ seance, hall, date }) {
       type: seatType,
     };
 
-    if (selectedSeats.some((s) => s.key === key)) {
-      setSelectedSeats(selectedSeats.filter((s) => s.key !== key));
-    } else {
-      setSelectedSeats([...selectedSeats, seatObj]);
-    }
+    setSelectedSeats((prev) => {
+      if (prev.some((s) => s.key === key)) {
+        return prev.filter((s) => s.key !== key);
+      }
+      return [...prev, seatObj];
+    });
   };
 
   if (loading) return <p>Загрузка мест...</p>;
@@ -61,10 +62,11 @@ export default function Seats({ seance, hall, date }) {
           <div key={rowIndex} className="buying-scheme__row">
             {row.map((seatType, seatIndex) => {
               if (seatType === "disabled")
-                return <div key={seatIndex} className="empty-seat" />;
+              return <div key={seatIndex} className="empty-seat" />;
 
               const key = `${rowIndex}-${seatIndex}`;
-              const isSelected = seatType !== "taken" && selectedSeats.some((s) => s.key === key);
+              const isTaken = seatType === "taken";
+              const isSelected = !isTaken && selectedSeats.some((s) => s.key === key);
 
               return (
                 <button
@@ -73,9 +75,9 @@ export default function Seats({ seance, hall, date }) {
                     buying-scheme__chair
                     ${seatType}
                     ${isSelected ? "selected" : ""}
-                    ${seatType === "taken" ? "closed" : ""}
+                    ${isTaken ? "closed" : ""}
                   `}
-                  disabled={seatType === "taken"}
+                  disabled={isTaken}
                   onClick={() => toggleSeat(rowIndex, seatIndex)}
                 ></button>
               );

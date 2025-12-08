@@ -61,11 +61,6 @@
   background-image: none;
 }
 
-.buying-scheme__chair.selected.closed {
-  background-color: rgba(23, 29, 36, 1);
-  border: 1px solid rgba(82, 82, 82, 1);
-}
-
 .empty-seat {
   width: 1.25rem;
   height: 1.25rem;
