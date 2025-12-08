@@ -64,7 +64,7 @@ export default function Seats({ seance, hall, date }) {
                 return <div key={seatIndex} className="empty-seat" />;
 
               const key = `${rowIndex}-${seatIndex}`;
-              const isSelected = selectedSeats.some((s) => s.key === key);
+              const isSelected = seatType !== "taken" && selectedSeats.some((s) => s.key === key);
 
               return (
                 <button
