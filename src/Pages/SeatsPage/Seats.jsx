@@ -13,7 +13,8 @@ export default function Seats({ seance, hall, date }) {
       setLoading(true);
 
       const res = await fetch(
-        `https://shfe-diplom.neto-server.ru/hallconfig?seanceId=${seance.id}&date=${ticketDate}`
+        `https://shfe-diplom.neto-server.ru/hallconfig?seanceId=${seance.id}&date=${ticketDate}`,
+        { cache: "no-store" }
       );
 
       const json = await res.json();
