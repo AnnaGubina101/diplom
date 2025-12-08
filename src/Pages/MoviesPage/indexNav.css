@@ -59,6 +59,10 @@
     margin-bottom: 1.875rem;
 }
 
+.index-main-section:last-child {
+    margin-bottom: 0;
+}
+
 .index-main-section__movie-info {
     display: flex;
     gap: 0.9375rem;

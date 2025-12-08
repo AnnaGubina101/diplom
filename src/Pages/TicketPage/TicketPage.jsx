@@ -1,5 +1,5 @@
 import Header from "../../Components/Header";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useAdminData } from "../../Api/AdminDataProvider";
 import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 import { useEffect, useRef, useState } from "react";
@@ -8,10 +8,13 @@ import QRcode from "../../Components/QRcode";
 
 export default function TicketPage() {
     const { seanceId } = useParams();
+    const location = useLocation();
     const { seances, films, halls } = useAdminData();
     const { selectedSeats } = useSelectedSeats();
     const [ticketData, setTicketData] = useState(null);
     const hasRequestedRef = useRef(false);
+
+    const ticketDate = location.state?.date || new Date().toISOString().split("T")[0];
 
     if (!seances.length || !films.length || !halls.length) {
         return <p>Загрузка...</p>;
@@ -36,19 +39,18 @@ export default function TicketPage() {
                 : Number(hall.hall_price_standart)
             }));
 
-            const date = new Date().toISOString().split("T")[0];
-            const resultTickets = await buyTicket(seance.id, date, tickets);
+            const resultTickets = await buyTicket(seance.id, ticketDate, tickets);
 
             if (resultTickets) {
                 setTicketData({
                     tickets: resultTickets,
-                    date: date
+                    date: ticketDate
                 });;
             }
         }
 
         purchase();
-    }, [seance, hall, selectedSeats]);
+    }, [seance, hall, selectedSeats, ticketDate]);
 
     const totalPrice = selectedSeats.reduce((sum, s) => {
         const price =
@@ -60,7 +62,7 @@ export default function TicketPage() {
 
     const qrValue = JSON.stringify({
         Фильм: film.film_name,
-        Дата: ticketData?.date,
+        Дата: ticketData?.date || ticketDate,
         Время: seance.seance_time,
         Зал: hall.hall_name,
         Ряд: selectedSeats[0].row + 1,

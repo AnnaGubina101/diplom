@@ -34,6 +34,8 @@ export default function Main({ film, selectedDay }) {
                                 return seanceTime > now;
                             });
                         }
+                        hallSeances = hallSeances
+                        .slice().sort((a, b) => a.seance_time.localeCompare(b.seance_time));
 
                         if (hallSeances.length === 0) return null;
 
@@ -42,7 +44,7 @@ export default function Main({ film, selectedDay }) {
                                 <strong>{hall.hall_name}</strong>
                                 <div className="movie-seances">
                                     {hallSeances.map((seance) => (
-                                        <button key={seance.id} onClick={() => navigate(`/seats/${seance.id}`)} className="seances-button">
+                                        <button key={seance.id} onClick={() => navigate(`/seats/${seance.id}`, {state: { date: selectedDay.full }})} className="seances-button">
                                             {seance.seance_time}
                                         </button>
                                     ))}

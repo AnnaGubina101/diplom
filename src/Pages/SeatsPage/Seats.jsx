@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 
-export default function Seats({ seance, hall }) {
+export default function Seats({ seance, hall, date }) {
   const { selectedSeats, setSelectedSeats } = useSelectedSeats();
   const [seatMap, setSeatMap] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const ticketDate = new Date().toISOString().split("T")[0];
+  const ticketDate = date;
 
   useEffect(() => {
     async function loadConfig() {
@@ -25,11 +25,12 @@ export default function Seats({ seance, hall }) {
         : [];
 
       setSeatMap(cfg);
+      setSelectedSeats([]);
       setLoading(false);
     }
 
     loadConfig();
-  }, [seance.id]);
+  }, [seance.id, date, setSelectedSeats]);
 
   const toggleSeat = (rowIndex, seatIndex) => {
     const seatType = seatMap[rowIndex][seatIndex];

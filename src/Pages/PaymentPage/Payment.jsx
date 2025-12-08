@@ -1,15 +1,16 @@
 import Button from "../../Components/Button"
-import { useParams } from "react-router-dom";
 import { useAdminData } from "../../Api/AdminDataProvider";
 import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 import Header from "../../Components/Header";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
 export default function Payment() {
   const navigate = useNavigate();
   const { seanceId } = useParams();
   const { seances, films, halls } = useAdminData();
   const { selectedSeats } = useSelectedSeats();
+  const { state } = useLocation();
+  const date = state?.date || new Date().toISOString().split("T")[0];
 
   const seance = seances.find(s => s.id === Number(seanceId));
   if (!seance) return <p>Загрузка...</p>;
@@ -42,7 +43,7 @@ export default function Payment() {
                   <p className="ticket-info">В зале: <strong>{hall?.hall_name}</strong></p>
                   <p className="ticket-info">Начало сеанса: <strong>{seance.seance_time}</strong></p>
                   <p className="ticket-info">Стоимость: <strong>{total} руб.</strong></p>
-                  <Button className="payment-main-btn" onClick={() => navigate(`/ticket/${seance.id}`)}>Получить код бронирования</Button>
+                  <Button className="payment-main-btn" onClick={() => navigate(`/ticket/${seance.id}`, {state: { date }})}>Получить код бронирования</Button>
                   <p className="ticket-add-info">После оплаты билет будет доступен в этом окне, а также придёт вам на почту. Покажите QR-код нашему контроллёру у входа в зал.</p>
                   <p className="ticket-add-info">Приятного просмотра!</p>
               </div>
