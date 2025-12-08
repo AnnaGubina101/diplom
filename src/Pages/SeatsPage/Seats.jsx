@@ -68,15 +68,25 @@ export default function Seats({ seance, hall, date }) {
               const isTaken = seatType === "taken";
               const isSelected = !isTaken && selectedSeats.some((s) => s.key === key);
 
+              let seatClass = "buying-scheme__chair";
+
+              if (seatType === "standart") {
+                seatClass += " open";
+              }
+              if (seatType === "vip") {
+                seatClass += " vip";
+              }
+              if (isTaken) {
+                seatClass += " closed";
+              }
+              if (isSelected) {
+                seatClass += " selected";
+              }
+
               return (
                 <button
                   key={seatIndex}
-                  className={`
-                    buying-scheme__chair
-                    ${seatType}
-                    ${isSelected ? "selected" : ""}
-                    ${isTaken ? "closed" : ""}
-                  `}
+                  className={seatClass}
                   disabled={isTaken}
                   onClick={() => toggleSeat(rowIndex, seatIndex)}
                 ></button>
