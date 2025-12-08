@@ -77,6 +77,10 @@ export default function TicketPage() {
     }
 
     const totalPrice = displaySeats.reduce((sum, s) => {
+        if (s.ticket_price !== undefined) {
+            return sum + Number(s.ticket_price);
+        }
+
         const price =
             s.type === "vip"
                 ? Number(hall.hall_price_vip)
