@@ -23,7 +23,7 @@ const getDisplayPlace = (seat) => {
 export default function TicketPage() {
     const { seanceId } = useParams();
     const location = useLocation();
-    const { seances, films, halls } = useAdminData();
+    const { seances, films, halls, reload } = useAdminData();
     const { selectedSeats, clearSelectedSeats } = useSelectedSeats();
     const [ticketData, setTicketData] = useState(null);
     const hasRequestedRef = useRef(false);
@@ -61,11 +61,12 @@ export default function TicketPage() {
                     date: ticketDate
                 });
                 clearSelectedSeats();
+                await reload(); 
             }
         }
 
         purchase();
-    }, [seance, hall, selectedSeats, ticketDate, clearSelectedSeats]);
+    }, [seance, hall, selectedSeats, ticketDate, clearSelectedSeats, reload]);
 
     const displaySeats = ticketData ? ticketData.tickets : selectedSeats;
 
