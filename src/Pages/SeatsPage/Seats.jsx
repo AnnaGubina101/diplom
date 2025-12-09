@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 
 export default function Seats({ seance, hall, date }) {
@@ -11,23 +11,29 @@ export default function Seats({ seance, hall, date }) {
   const loadConfig = useCallback(async () => {
     setLoading(true);
 
-    const res = await fetch(
+    try {
+      const res = await fetch(
         `https://shfe-diplom.neto-server.ru/hallconfig?seanceId=${seance.id}&date=${ticketDate}`,
         { cache: "no-store" }
-    );
+      );
 
-    const json = await res.json();
+      const json = await res.json();
 
-    const cfg = Array.isArray(json)
+      const cfg = Array.isArray(json)
         ? json
         : Array.isArray(json.result)
         ? json.result
         : [];
 
-    setSeatMap(cfg);
-    setSelectedSeats([]);
-    setLoading(false);
-  }, [seance.id, date, setSelectedSeats, ticketDate]);
+      setSeatMap(cfg);
+      setSelectedSeats([]);
+    } catch (e) {
+      console.error("Ошибка загрузки конфигурации зала", e);
+      setSeatMap([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [seance, ticketDate, setSelectedSeats]);
 
 
 
@@ -56,6 +62,11 @@ export default function Seats({ seance, hall, date }) {
     });
   };
 
+  const isSeatSelected = (rowIndex, seatIndex) => {
+    const key = `${rowIndex}-${seatIndex}`;
+    return selectedSeats.some((s) => s.key === key);
+  };
+
   if (loading) return <p>Загрузка мест...</p>;
 
   return (
@@ -69,7 +80,7 @@ export default function Seats({ seance, hall, date }) {
 
               const key = `${rowIndex}-${seatIndex}`;
               const isTaken = seatType === "taken";
-              const isSelected = !isTaken && selectedSeats.some((s) => s.key === key);
+              const selected = isSeatSelected(rowIndex, seatIndex);
 
               let seatClass = "buying-scheme__chair";
 
@@ -82,13 +93,13 @@ export default function Seats({ seance, hall, date }) {
               if (isTaken) {
                 seatClass += " closed";
               }
-              if (isSelected) {
+              if (selected) {
                 seatClass += " selected";
               }
 
               return (
                 <button
-                  key={seatIndex}
+                  key={key}
                   className={seatClass}
                   disabled={isTaken}
                   onClick={() => toggleSeat(rowIndex, seatIndex)}
