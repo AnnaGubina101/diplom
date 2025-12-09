@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelectedSeats } from "../../Api/SelectedSeatsContext";
 
 export default function Seats({ seance, hall, date }) {
@@ -8,30 +8,32 @@ export default function Seats({ seance, hall, date }) {
 
   const ticketDate = date;
 
-  useEffect(() => {
-    async function loadConfig() {
-      setLoading(true);
+  const loadConfig = useCallback(async () => {
+    setLoading(true);
 
-      const res = await fetch(
+    const res = await fetch(
         `https://shfe-diplom.neto-server.ru/hallconfig?seanceId=${seance.id}&date=${ticketDate}`,
         { cache: "no-store" }
-      );
+    );
 
-      const json = await res.json();
+    const json = await res.json();
 
-      const cfg = Array.isArray(json)
+    const cfg = Array.isArray(json)
         ? json
         : Array.isArray(json.result)
         ? json.result
         : [];
 
-      setSeatMap(cfg);
-      setSelectedSeats([]);
-      setLoading(false);
-    }
+    setSeatMap(cfg);
+    setSelectedSeats([]);
+    setLoading(false);
+  }, [seance.id, date, setSelectedSeats, ticketDate]);
 
+
+
+  useEffect(() => {
     loadConfig();
-  }, [seance.id, date, setSelectedSeats]);
+  }, [loadConfig]);
 
   const toggleSeat = (rowIndex, seatIndex) => {
     const seatType = seatMap[rowIndex][seatIndex];
