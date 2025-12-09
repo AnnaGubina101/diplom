@@ -96,6 +96,7 @@ export default function Seats({ seance, hall, date }) {
               if (selected) {
                 seatClass += " selected";
               }
+              seatClass = seatClass.replace("taken", "");
 
               return (
                 <button
