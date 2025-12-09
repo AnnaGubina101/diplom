@@ -38,7 +38,22 @@ export default function SeatsPage() {
                     <div className="button-wrap">
                         <Button
                         className='book'
-                        onClick={() => navigate(`/payment/${seance.id}`, {state: { date }})}
+                        onClick={() =>
+                            navigate(`/payment/${seance.id}`, {
+                            state: {
+                                date,
+                                seanceId: seance.id,
+                                filmName: film.film_name,
+                                hallName: hall.hall_name,
+                                time: seance.seance_time,
+                                seats: selectedSeats,
+                                prices: {
+                                standard: hall.hall_price_standart,
+                                vip: hall.hall_price_vip,
+                                },
+                            },
+                            })
+                        }
                         disabled={selectedSeats.length === 0}
                         >Забронировать</Button>
                     </div>
